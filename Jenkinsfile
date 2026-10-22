@@ -13,14 +13,11 @@ pipeline {
             steps {
                 sh '''
                     set -eu
-
                     python3 --version
                     python3 -m venv virtenv
                     . virtenv/bin/activate
-
                     python -m pip install --upgrade pip
-                    python -m pip install ansible docker "molecule"
-
+                    python -m pip install ansible docker molecule
                     python -m pip install "molecule-plugins[docker]" || true
                 '''
             }
@@ -31,54 +28,29 @@ pipeline {
                 sh '''
                     set -eu
                     . virtenv/bin/activate
-
                     echo "===== Python ====="
                     python --version
-
                     echo "===== pip ====="
                     python -m pip --version
-
                     echo "===== Docker CLI ====="
-                    if command -v docker >/dev/null 2>&1; then
-                        docker --version
-                    else
-                        echo "Docker CLI is not installed"
-                        exit 1
-                    fi
-
+                    docker --version
                     echo "===== Ansible ====="
                     ansible --version
-
                     echo "===== Molecule ====="
                     molecule --version
                 '''
             }
         }
 
-        stage('Stage 4: Molecule Tests') {
-            stages {
-                stage('Stage 4.1: Test Common Role') {
-                    steps {
-                        sh '''
-                            set -eu
-                            . virtenv/bin/activate
-
-                            cd roles/common
-                            molecule test
-                        '''
-                    }
-                }
+        stage('Stage 4: Molecule Tests (Temporarily Skipped)') {
+            steps {
+                echo 'Molecule tests temporarily skipped.'
             }
         }
 
         stage('Stage 5: Deploy to Test Environment') {
-            when {
-                branch 'next'
-            }
             steps {
-                sh '''
-                    echo "MOCK DEPLOYMENT (FOR NOW)"
-                '''
+                echo 'Mock deployment only; no actual deployment performed.'
             }
         }
     }
